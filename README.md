@@ -154,22 +154,37 @@ automatically removed during database maintenance.
 Command Line Options
 --------------------
 AWS Freezer supports the following command line options:
+
 '--help' prints the command line options
+
 '--verbose' displays debug messages
+
 '--trace <list of modules>' restricts debug messages to specific modules
+
+
 '--threads <num>' sets the maximum number of threads used (excluding GUI and DB threads)
 
 '--no-gui' allows running the tool in daemon mode (see below)
+
 '--config <file>' loads and applies the specified configuration file (default: 'freezer.conf')
+
 '--database <file>' uses the specified file as SQLite database
 
+
 '--accountid <id>' sets the account ID used for AWS interfacing
+
 '--region <AWS region>' sets the AWS region for the vaults
+
 '--access-key <key>' sets the AWS access key
+
 '--secret-key <key>' sets the required AWS secret key
+
 '--chunk-size <size>' sets the default chunk size used for uploading archives
+
 '--queue <queue URL>' sets the AWS SQS queue poll URL
+
 '--poll-time <secs>' sets the AWS SQS queue polling time (see AWS documentation for valid values)
+
 
 The values provided are overridden by values stored inside the SQLite database. Using the AWS values on the
 command line only makes sense if the SQLite database is empty, for example when using the tool in daemon mode (see below).
