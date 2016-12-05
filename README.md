@@ -92,19 +92,19 @@ The menu options allow:
 The vault dialog displays all archives available in a vault. This includes archives uploaded through other means,
 although interfacing with such archives is limited.
 For each archive, it lists the local archive ID, its size, the number of files inside the archive, when it was
- created (as determined by the vault inventory of AWS), the archive description (usually containing compression
- and encryption information) and the current status of the archive (see above).
+created (as determined by the vault inventory of AWS), the archive description (usually containing compression
+and encryption information) and the current status of the archive (see above).
 
- The toolbar allows the following actions:
- - create a new archive using the archive dialog
- - remove an archive (requiring an explicit confirmation sentence: 'I am sure')
- - disconnecting an archive (remove the local file only)
- - downloading an archive (requesting retrieval or actual retrieval)
- - requesting an explicit vault inventory
- - closing the dialog
+The toolbar allows the following actions:
+- create a new archive using the archive dialog
+- remove an archive (requiring an explicit confirmation sentence: 'I am sure')
+- disconnecting an archive (remove the local file only)
+- downloading an archive (requesting retrieval or actual retrieval)
+- requesting an explicit vault inventory
+- closing the dialog
 
- Double clicking on an archive row opens the archive dialog
-.
+Double clicking on an archive row opens the archive dialog.
+
 ### Archive Dialog
 The archive dialog features:
 - a convenient toolbar
@@ -215,8 +215,3 @@ AWS Freezer was developed using Python 2.7 on a Ubuntu workstation. It requires 
 
 It features a multi-thread controller interfacing with a local SQLite database, remote AWS features (Glacier, SQS)
 and a local GUI thread.
-
-
-# freezer
-AWS Freezer: python GUI interface to archiving files in Amazon AWS Glacier low-cost archiving solution
-
