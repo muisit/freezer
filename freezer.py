@@ -1,14 +1,30 @@
 #!/usr/bin/python
 #
-# Freezer: AWS Glacier interface
+# AWS Freezer: AWS Glacier interface
 #
 # The Freezer programs allows users to freeze archives into the AWS Glacier storage and melt them
 # back into your filesystem.
 # The program uses an SQLite database that can (and needs!) to be backed up easily to facilitate the
 # Glacier interface
 #
+#
 # Copyright Muis IT 2011 - 2016
-
+#
+# This file is part of AWS Freezer
+#
+# AWS Freezer is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# AWS Freezer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with AWS Freezer (see the COPYING file).
+# If not, see <http://www.gnu.org/licenses/>.
 
 import threading
 import sys, os, os.path
