@@ -104,6 +104,12 @@ class ActionFactory:
         act.status="init"
         globals.DB.activate(act)
 
+    def upload_local_archive(self, vaultname, aid):
+        act = action.Action(cmd_upload_local_archive)
+        act.vault_name=vaultname
+        act.archive_id = aid
+        globals.DB.activate(act)
+
     def show_message(self, txt, secondtxt=""):
         act = action.Action(cmd_message)
         act.txt=txt
@@ -487,6 +493,33 @@ def cmd_test_download(cmd, caller, data=None):
         globals.ActionFactory.show_message("Archive Invalid","Unable to validate archive '" + cmd.archive.description + "'. It does not seem to be a valid TAR archive")
     elif caller == "db":
         cmd.archive.save()
+
+def cmd_upload_local_archive(cmd, caller, data=None):
+    if caller == "db":
+        globals.Reporter.message("selecting archive id " + str(cmd.archive_id),"action")
+        globals.DB.open()
+        cmd.vault=vault.Vault()
+        cmd.vault.by_name(cmd.vault_name)
+        cmd.archive=archive.Archive()
+        cmd.archive.load(cmd.archive_id)
+        cmd.key= key.Key()
+        globals.Reporter.message("archive key is " + str(cmd.archive.key_id),"action")
+        if cmd.archive.key_id < 0 or cmd.key == None:
+            enckey = globals.Config.getValue("encryptionkey")
+            cmd.key = key.Key()
+            cmd.key.load(enckey)
+            cmd.archive.key_id=cmd.key.id
+            cmd.archive.save()
+        else:
+            cmd.key.load(cmd.archive.key_id)            
+        globals.DB.close()
+            
+        # then start uploading the new archive
+        act = action.Action(cmd_upload_archive)
+        act.archive = cmd.archive
+        act.vault=cmd.vault
+        act.key=cmd.key
+        globals.Controller.activate(act)
 
 def cmd_create_archive(cmd,caller, data=None):
     if caller == "backend":

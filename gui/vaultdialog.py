@@ -31,7 +31,8 @@ class VaultDialog(guiobj.GUIObj):
         self.dialog_label = builder.get_object('archivename_label')
 
         handlers = {
-            "menu_newarchive": self.toolbar_uploadarchive,
+            "menu_newarchive": self.toolbar_newarchive,
+            "toolbar_uploadarchive": self.toolbar_upload,
             "toolbar_removearchive":self.toolbar_removearchive,
             "toolbar_savearchive": self.toolbar_savearchive,
             "toolbar_refreshvault":self.toolbar_refreshvault,
@@ -61,8 +62,19 @@ class VaultDialog(guiobj.GUIObj):
             aid = str(model.get_value(iter,0))
             globals.GUI.archive_dialog(self.vault_name, aid)
 
-    def toolbar_uploadarchive(self,widget):
+    def toolbar_newarchive(self,widget):
         globals.GUI.archive_dialog(self.vault_name)
+
+    def toolbar_upload(self,widget):
+        sel = self.archiveview.get_selection()
+        if sel.count_selected_rows() > 0:
+            (model,iter) = sel.get_selected()
+            id = str(model.get_value(iter,0))
+            descr = str(model.get_value(iter,3))
+            state = str(model.get_value(iter,4))
+
+            if state == "local":
+                globals.ActionFactory.upload_local_archive(self.vault_name, id)
 
     def removearchive_click(self,widget):
         id = self.get_widget_id(widget)
@@ -72,6 +84,7 @@ class VaultDialog(guiobj.GUIObj):
             val = self.get_entry(self.dialog, 'entry_iamsure')
             if val != None and val == "I am sure":
                 self.removearchive(self.aid)
+
 
     def remove_local_file(self,widget):
         sel = self.archiveview.get_selection()

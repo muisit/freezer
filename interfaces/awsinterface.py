@@ -217,6 +217,12 @@ class AWSInterface:
             chunks = int(filesize / chunksize)
             if (chunks * chunksize) < filesize:
                 chunks+=1
+                
+            while chunks > 9999:
+                chunksize = enc.chunksize(chunksize*2)
+                chunks = int(filesize / chunksize)
+                if (chunks * chunksize) < filesize:
+                    chunks+=1
 
             globals.Reporter.message("initiating request for " + archive.description + " of size " + str(filesize) + " in " + str(chunks) + " chunks of "+ str(chunksize) + " bytes","aws")
             response = self.glacier_client.initiate_multipart_upload(
@@ -225,6 +231,7 @@ class AWSInterface:
                 partSize = str(chunksize),
                 accountId = self.accountid)
             if response != None:
+                globals.Reporter.message("AWS response is " + str(response),"aws")
                 uploadid = response["uploadId"]
                 hashes=[]
                 for i in range(chunks):
@@ -237,7 +244,8 @@ class AWSInterface:
                         size = filesize - offset
                     cb(offset,filesize)
                     chunk = enc.read(offset,size)
-                    chunkhash = hashlib.sha256(chunk).digest()
+                    chunkhash = self.calculate_chunk_hash(chunk)
+                    globals.Reporter.message("created sha256 hash of encrypted chunk, results in "+binascii.hexlify(chunkhash),"aws")
                     hashes.append(chunkhash)
 
                     globals.Reporter.message("initiating upload of chunk " + str(i),"aws")
@@ -273,12 +281,34 @@ class AWSInterface:
             cb(-1,-1)
         return None
 
-    def compute_tree_hash(self, hashes,cb):
+    def calculate_chunk_hash(self, chunk):
+        # we need to calculate the hash by creating a tree hash of all 1Mb blocks in this chunk
+        mb=1024*1024
+        parts = int(len(chunk) / mb)
+        if parts * mb < len(chunk):
+            parts+=1
+
+        if parts == 1:
+            return hashlib.sha256(chunk).digest()
+            
+        else:
+            allhashes=[]
+            for i in range(parts):
+                chunkend = (i+1)*mb
+                if chunkend > len(chunk):
+                    chunkend=len(chunk)
+                hashchunk = chunk[(i*mb) : chunkend]
+                allhashes.append(hashlib.sha256(hashchunk).digest())
+        
+            return self.compute_tree_hash(allhashes)  
+
+    def compute_tree_hash(self, hashes,cb=None):
         myhashes=hashes
         while len(myhashes) > 1:
             oldhashes=myhashes
             globals.Reporter.message("computing tree hash of list of " + str(len(oldhashes)) + " hashes","aws")
-            cb(-4,len(oldhashes))
+            if cb!= None:
+                cb(-4,len(oldhashes))
             myhashes=[]
             sz = len(oldhashes)
             i = 0
@@ -297,7 +327,8 @@ class AWSInterface:
                     globals.Reporter.message("last hash at "+str(i-1) + " is alone","aws")
                 myhashes.append(hash1)
 
-        cb(-4,0)
+        if cb!=None:
+            cb(-4,0)
         return myhashes[0]
 
     def remove_archive(self, archive, vault):

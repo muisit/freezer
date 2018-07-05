@@ -35,6 +35,21 @@
               </packing>
             </child>
             <child>
+              <object class="GtkToolButton" id="toolbutton_upload">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Upload a local archive</property>
+                <property name="label" translatable="yes">Upload Archive</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-convert</property>
+                <signal name="clicked" handler="toolbar_uploadarchive" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkToolButton" id="toolbutton_removearchive">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -53,6 +68,7 @@
               <object class="GtkToolButton" id="toolbutton1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Remove local file</property>
                 <property name="label" translatable="yes">Remove local file</property>
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-disconnect</property>

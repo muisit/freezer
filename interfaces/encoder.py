@@ -117,7 +117,7 @@ class Encoder(Encrypter):
                     rnds+=1
                     chunk += [Crypto.Random.get_random_bytes(1)]
 
-        #globals.Reporter.message("converting chunk of size '" + str(len(chunk)) + "' to byte buffer","encrypt")
+        globals.Reporter.message("converting chunk of size '" + str(len(chunk)) + "' to byte buffer","encrypt")
         chunk = self.conv_bytes_to_bytestring(chunk)
         if position < chunksize:
             # room left to add bytes from the file
@@ -141,7 +141,9 @@ class Encoder(Encrypter):
 
         if self.key != None and offset == 0:
             # prepend the unencrypted IV list
+            globals.Reporter.message("prepending IV","encrypt")
             encrypted_chunk = self.conv_bytes_to_bytestring(self.iv) + encrypted_chunk
+        globals.Reporter.message("encrypted chunk has size "+str(len(encrypted_chunk)),"encrypt")
         return encrypted_chunk
 
 class Decoder(Encrypter):
